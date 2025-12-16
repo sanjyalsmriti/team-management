@@ -39,4 +39,10 @@ async post(endpoint,body){
 }
 
 }
+
 export const apiService = new ApiService(); 
+export const userApi = {
+    getAll: () => apiService.get('/users'),
+    getById: (id) => apiService.get(`/users/${id}`),
+    create: (user) => apiService.post('/users',user)
+}
