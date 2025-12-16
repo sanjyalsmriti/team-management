@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useFetchUsers } from "../hooks/useFetchUsers";
+import UserCard from "./UserCard";
 
 const UserList = ()=>{
 
@@ -17,14 +18,19 @@ const UserList = ()=>{
         <div>
             <h1>UserList</h1>
             <input type="text" id="search" value={searchTerm} onChange={(e)=> setSearchTerm(e.target.value)}/>
-                {filteredUser.map((person) => (
-                    <div>
-                        <div>
-                            {person.name}
-                            {person.email}
-                        </div>
-                    </div>
-                ))}
+               {filteredUser.length === 0 ? (
+                <div>
+                    <p>No users found</p>
+                </div>
+               ): (
+                filteredUser.map((user) =>(
+                    <UserCard
+                    key={(user.id || `added-${user.tempId}`)}
+                    user={user}
+                    onClick={()=> console.log(user)}
+                    />
+                ))
+               )}
         </div>                                                                            
     )
 }
