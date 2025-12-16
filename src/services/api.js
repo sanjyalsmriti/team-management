@@ -1,0 +1,27 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://jsonplaceholder.typicode.com';
+class ApiService {
+    async request(endpoint,options = {}) {
+        const url = `${API_BASE_URL}${endpoint}`;
+        const config = {
+            headers: {
+                'Content-type': 'application/json',
+                ...options.headers,
+            },
+            ...options,
+        };
+        try{
+            const response = await fetch(url,config);
+
+            if(!response.ok){
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            return {data,error:null};
+        }catch(error) {
+            return {
+                data: null,
+                error: error.message || 'An error occured while fetching data'
+            };
+        }
+    }
+}
