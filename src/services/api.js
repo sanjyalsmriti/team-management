@@ -30,5 +30,13 @@ class ApiService {
         })
     
 }
+async post(endpoint,body){
+    return this.request(endpoint,{
+        method: 'POST',
+        body: JSON.stringify(body),
+    });
+
+}
+
 }
 export const apiService = new ApiService(); 
