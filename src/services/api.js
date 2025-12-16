@@ -24,4 +24,10 @@ class ApiService {
             };
         }
     }
+    async get(endpoint){
+        return this.request(endpoint,{
+            method: 'GET',
+        })
+    
+}
 }
