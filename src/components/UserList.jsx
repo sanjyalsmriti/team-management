@@ -1,37 +1,55 @@
-import { useMemo, useState } from "react";
-import { useFetchUsers } from "../hooks/useFetchUsers";
-import UserCard from "./UserCard";
+import React, { useState, useMemo, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSelectedUser } from '../store/usersSlice';
+import UserCard from './UserCard';
+import SearchBar from './SearchBar';
+import '../styles/UserList.css';
 
-const UserList = ()=>{
+const UserList = () => {
+  const dispatch = useDispatch();
+  const { users, addedUsers } = useSelector((state) => state.users);
+  const [searchTerm, setSearchTerm] = useState('');
 
-    const {users} = useFetchUsers();
-    const [searchTerm,setSearchTerm] = useState("")
-    const filteredUser  = useMemo(()=>{
-        if(!searchTerm.trim()){
-            return users;
-        }
-        return users.filter((user) =>{
-           return user.name.toLowerCase().includes(searchTerm.toLocaleLowerCase())
-        });
-    })
-    return(
-        <div>
-            <h1>UserList</h1>
-            <input type="text" id="search" value={searchTerm} onChange={(e)=> setSearchTerm(e.target.value)}/>
-               {filteredUser.length === 0 ? (
-                <div>
-                    <p>No users found</p>
-                </div>
-               ): (
-                filteredUser.map((user) =>(
-                    <UserCard
-                    key={(user.id || `added-${user.tempId}`)}
-                    user={user}
-                    onClick={()=> console.log(user)}
-                    />
-                ))
-               )}
-        </div>                                                                            
-    )
-}
+  // Combine API users and added users
+  const allUsers = useMemo(() => {
+    return [...users, ...addedUsers];
+  }, [users, addedUsers]);
+
+  // Filter users by name (case-insensitive)
+  const filteredUsers = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return allUsers;
+    }
+    return allUsers.filter((user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [allUsers, searchTerm]);
+
+  const handleUserClick = useCallback((user) => {
+    dispatch(setSelectedUser(user));
+  }, [dispatch]);
+
+  return (
+    <div className="user-list-container">
+      <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <div className="user-list">
+        {filteredUsers.length === 0 ? (
+          <div className="no-users">
+            <p>No users found</p>
+          </div>
+        ) : (
+          filteredUsers.map((user) => (
+            <UserCard
+              key={user.id || `added-${user.tempId}`}
+              user={user}
+              onClick={() => handleUserClick(user)}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default UserList;
+
