@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addUser } from '../store/usersSlice';
 import { useToast } from '../context/ToastContext';
+import '../styles/AddUserForm.css';
 
 const AddUserForm = () => {
   const dispatch = useDispatch();
