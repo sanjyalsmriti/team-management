@@ -1,0 +1,25 @@
+.user-list-container {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.no-users {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}
+
+.no-users p {
+  font-size: 1.1rem;
+}
+
+
