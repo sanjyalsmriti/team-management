@@ -1,29 +1,32 @@
-import { useEffect, useState } from "react";
-import { userApi } from "../services/api";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUsers, setLoading, setError } from '../store/usersSlice';
+import { userApi } from '../services/api';
 
-
-
+/**
+ * Custom hook to fetch users from API
+ * Uses the API service layer for better code organization
+ */
 export const useFetchUsers = () => {
-    const [users,setUsers] = useState([]);
-    const [loading,setLoading] = useState(true);
-    const [error,setError] = useState(null);
+  const dispatch = useDispatch();
+  const { users } = useSelector((state) => state.users);
 
-    useEffect(() => {
+  useEffect(() => {
+    // Only fetch if users array is empty (avoid unnecessary refetches)
+    if (users.length > 0) return;
 
-        const fetchUsers = async () => {
-            try{
-                const { data } = await userApi.getAll();
-                setUsers(data);
-            }catch(err){
-                setError(err)
-            }finally{
-                setLoading(false);
-            }
-        };
+    const fetchUsers = async () => {
+      dispatch(setLoading(true));
+      const { data, error } = await userApi.getAll();
+      
+      if (error) {
+        dispatch(setError(error));
+      } else {
+        dispatch(setUsers(data));
+      }
+    };
 
-        fetchUsers();
-    }, []);
-    
-    return { users,loading,error };
-
+    fetchUsers();
+  }, [dispatch, users.length]);
 };
+
